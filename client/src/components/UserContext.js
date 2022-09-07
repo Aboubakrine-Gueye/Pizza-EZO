@@ -31,7 +31,7 @@ export const UserProvider = ({ children }) => {
         }
       }
     };
-    if (isAuthenticated && userCartCounter > 0) {
+    if (isAuthenticated) {
       getUserCart();
     }
     return () => {

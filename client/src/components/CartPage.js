@@ -162,7 +162,7 @@ const CartPage = () => {
             </h3>
           </FlexContainer>
         )}
-        {userCartCounter > 0 && (
+        {/* {userCartCounter > 0 && (
           <div>
             {isAuthenticated ? (
               <UserOrder />
@@ -172,7 +172,7 @@ const CartPage = () => {
               </Checkout>
             )}
           </div>
-        )}
+        )} */}
       </Wrapper>
     </Center>
   );
