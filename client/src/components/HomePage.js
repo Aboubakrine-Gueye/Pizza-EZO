@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 // import { UserContext } from './UserContext';
 import { StoreContext } from './StoreContext';
 
@@ -10,43 +11,14 @@ import { BsCartCheckFill } from 'react-icons/bs';
 import { FaRegUser } from 'react-icons/fa';
 
 const Header = () => {
-  // const { isLoggedIn, setIsLoggedIn, setCurrentUser } = useContext(UserContext);
-  // const {cart, dispatch} = useContext(StoreContext)
-  const { store, setStore } = useContext(StoreContext);
-  const [loading, setloading] = useState(false);
+  const { isLoading, isAuthenticated, error, user, loginWithRedirect, logout } =
+    useAuth0();
+  const { store, setStore, loading, setLoading } = useContext(StoreContext);
 
   const navigate = useNavigate();
 
-  // Function that navigates to the specified route (/profile) on click
-  const handleClick = (routename) => {
-    navigate(`/${routename}`);
-  };
-
-  // Create a function to handle click of logout button
-  // const handleClickLogOut = () => {
-  //   setCurrentUser(null);
-  //   setIsLoggedIn(false);
-  // dispatch({type: 'clear-cart'})
-  // };
-
-  useEffect(() => {
-    fetch('/api/stores')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data.data);
-        setStore(data.data);
-        setloading(true);
-      })
-      .catch((err) => console.log(err));
-  }, [loading]);
-
   if (!store) {
-    console.log('EMPTY stores');
     return <div>Loading ...</div>;
-  } else {
-    console.log('STORES LOADED');
-    console.log('STORE====> ', Array.isArray(store));
-    console.log('STORE====> ', store);
   }
 
   return (
@@ -119,6 +91,7 @@ const ImagePoster = styled.div`
 const NaviLink = styled(NavLink)`
   width: 30%;
   cursor: pointer;
+  text-decoration: none;
 `;
 
 const StoreLink = styled.div`
@@ -139,6 +112,13 @@ const Store = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  h4,
+  span {
+    font-family: var(--font-heading);
+    font-size: 20px;
+    text-decoration: none;
+    color: #222;
+  }
 `;
 const Image = styled.img`
   width: 100%;

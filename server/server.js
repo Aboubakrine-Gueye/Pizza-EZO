@@ -17,7 +17,14 @@ const {
   getStores,
 } = require('./handlers/storeHandlers');
 
-const { getStorePizza } = require('./handlers/storePizzasHandlers');
+const { getStoreMenu } = require('./handlers/storePizzasHandlers');
+
+const {
+  addCart,
+  getCart,
+  removeCart,
+  updateCart,
+} = require('./handlers/cartHandlers');
 
 express()
   // Log server outputs
@@ -44,15 +51,26 @@ express()
   .get('/api/pizzas', getPizzas)
   // Get all pizza toppings
   .get('/api/toppings', getToppings)
-  // Get all stores and locatiob
 
   // Store endpoints
   .get('/api/stores', getStores)
   .get('/api/store/:_id', getStore)
-  .delete('/api/store/:_id', deleteStore)
+  .delete('/api/stores/:_id', deleteStore)
   .post('/api/store', addStore)
+  .get('/api/menu/:_id', getStoreMenu)
+  // .get('/api/store/pizza/', getStorePizza)
 
-  .get('/api/store/pizza/', getStorePizza)
+  //  Cart endpoints
+  // Get the content of the cart for the current user session
+  .get('/api/cart/:email', getCart)
+  // Add a new pizza in the cart for the current user session
+  .post('/api/cart', addCart)
+  // Remove one selected pizza from the cart for the current user session
+  .delete('/api/cart/:cartId', removeCart)
+  // The following will do an update of the cartQuantity
+  // Choose PATCH instead of a PUT
+  .patch('/api/cart', updateCart)
+
   //  This is our catch all endpoints
   .get('*', (req, res) => {
     res.status(404).json({

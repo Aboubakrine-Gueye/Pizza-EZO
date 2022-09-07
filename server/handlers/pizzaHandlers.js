@@ -8,7 +8,9 @@ const options = {
   useUnifiedTopology: true,
 };
 
+//*******************/
 // get all pizzas
+//*******************/
 const getPizzas = async (req, res) => {
   // create new mongoclient promise
   const client = new MongoClient(MONGO_URI, options);
@@ -42,7 +44,9 @@ const getPizzas = async (req, res) => {
   client.close();
 };
 
+//*******************/
 // Get only one specified pizza
+//*******************/
 const getAPizza = async (req, res) => {
   // create new mongoclient promise
   const client = new MongoClient(MONGO_URI, options);
@@ -57,20 +61,8 @@ const getAPizza = async (req, res) => {
       .findOne({ _id: req.params._id });
 
     if (pizza) {
-      // get all the toppings of the pizza
-      const listToppings = pizza.toppings.map((item) => item._id);
-      // Build the query to be used to retrieve the lit of toppings of the pizza.
-      const query = { _id: { $in: listToppings } };
-      // Get all the toppings of the pizza from the toppings collection.
-      const topping = await db.collection('toppings').find(query).toArray();
-      if (topping) {
-        // send response containing the pizza and the list  of toppings in an array
-        pizza.toppings = topping;
-        res.status(200).json({ status: 200, data: pizza });
-      } else {
-        // No topping for the pizza
-        res.status(200).json({ status: 200, data: pizza });
-      }
+      // send response containing the pizza and the list  of toppings in an array
+      res.status(200).json({ status: 200, data: pizza });
     } else {
       // if pizza is empty return 404
       res.status(404).json({
@@ -88,7 +80,9 @@ const getAPizza = async (req, res) => {
   client.close();
 };
 
+//*******************/
 // Create a custom pizza
+//*******************/
 const addPizza = async (req, res) => {
   // create new mongoclient promise
   const client = new MongoClient(MONGO_URI, options);
@@ -123,7 +117,9 @@ const addPizza = async (req, res) => {
   client.close();
 };
 
+//*******************/
 // get all toppings
+//*******************/
 const getToppings = async (req, res) => {
   // create new mongoclient promise
   const client = new MongoClient(MONGO_URI, options);
@@ -133,7 +129,10 @@ const getToppings = async (req, res) => {
     // connect to client
     await client.connect();
     // find all toppings and store them in an array
-    const allToppings = await db.collection('toppings').find().toArray();
+    const allToppings = await db
+      .collection('toppings')
+      .find({ isExtra: true })
+      .toArray();
     if (allToppings.length === 0) {
       // if array is empty return 404
       res.status(404).json({

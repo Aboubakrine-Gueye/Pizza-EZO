@@ -26,7 +26,7 @@ export default createGlobalStyle`
   small, strike, strong, sub, sup, tt, var,
   b, u, i, center,
   dl, dt, dd, ol, ul, li,
-  fieldset, form, label, legend,
+  fieldset, form, slegend,
   caption, tbody, tfoot, thead, tr, th, td,
   article, aside, canvas, details, embed,
   figure, figcaption, footer, header, hgroup,
@@ -59,10 +59,9 @@ export default createGlobalStyle`
       content: none;
   }
 
-  h1,
+h1,
 h2,
 h3,
-label,
 button {
   color: #fff;
   font-family: var(--font-heading);
@@ -77,11 +76,11 @@ input {
   font-family: var(--font-body);
 }
 
-  input {
+  /* input {
     font-size: 24px;
     height: 42px;
     border: 2px solid var(--color-orange);
     border-radius: 4px;
     padding: 0 12px;
-  }
+  } */
 `;

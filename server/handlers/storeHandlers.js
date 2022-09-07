@@ -8,7 +8,9 @@ const options = {
   useUnifiedTopology: true,
 };
 
+//*******************/
 // get all stores
+//*******************/
 const getStores = async (req, res) => {
   // create new mongoclient promise
   const client = new MongoClient(MONGO_URI, options);
@@ -42,7 +44,9 @@ const getStores = async (req, res) => {
   client.close();
 };
 
+//*******************/
 // get a particulary store
+//*******************/
 const getStore = async (req, res) => {
   // create new mongoclient promise
   const client = new MongoClient(MONGO_URI, options);
@@ -77,7 +81,9 @@ const getStore = async (req, res) => {
   client.close();
 };
 
+//*******************/
 // Create a new store
+//*******************/
 const addStore = async (req, res) => {
   // create new mongoclient promise
   const client = new MongoClient(MONGO_URI, options);
@@ -112,7 +118,9 @@ const addStore = async (req, res) => {
   client.close();
 };
 
+//*******************/
 // Delete an existing store
+//*******************/
 const deleteStore = async (req, res) => {
   // create new mongoclient promise
   const client = new MongoClient(MONGO_URI, options);

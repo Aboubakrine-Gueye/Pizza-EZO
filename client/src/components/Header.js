@@ -1,71 +1,77 @@
 import { useContext } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-// import { UserContext } from './UserContext';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { UserContext } from './UserContext';
 // import { StoreContext } from "./StoreContext";
 
-// Icons
+// Icons from react-icons
 import { BsCartDash } from 'react-icons/bs';
 import { BsCartCheckFill } from 'react-icons/bs';
 import { FaRegUser } from 'react-icons/fa';
 
-// The Header is an element that will sit at the top of
-// all pages, it is defined as a constant here and passed
-// to App.
 const Header = () => {
-  // const { isLoggedIn, setIsLoggedIn, setCurrentUser } = useContext(UserContext);
-  // const {cart, dispatch} = useContext(StoreContext)
+  const { isLoading, isAuthenticated, error, user, loginWithRedirect, logout } =
+    useAuth0();
+  const { userCartCounter, setUserCartCounter } = useContext(UserContext);
 
   const navigate = useNavigate();
 
-  // Function that navigates to the specified route (/profile) on click
-  const handleClick = (routename) => {
-    navigate(`/${routename}`);
+  // Navigate to the specified page
+  const handleNavigateToPage = (navigateToPage) => {
+    if (navigateToPage === 'logout') {
+      // Reset all
+      setUserCartCounter(0);
+      navigate('/');
+    } else if (navigateToPage === 'cart' && userCartCounter > 0) {
+      navigate(`/${navigateToPage}`);
+    }
   };
 
-  // Create a function to handle click of logout button
-  // const handleClickLogOut = () => {
-  //   setCurrentUser(null);
-  //   setIsLoggedIn(false);
-  // dispatch({type: 'clear-cart'})
-  // };
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
       <Wrapper>
-        <h1>Pizza Ez Order</h1>
+        <NaviLink to='/'>
+          <h1>Pizza Ez Order</h1>
+        </NaviLink>
         <LoginAndCartSection>
-          <LoginSection>Login</LoginSection>
-          <Cart>
-            <BsCartDash size={30} />
-            <Counter>20</Counter>
+          {isAuthenticated && (
+            <ProfileSection onClick={() => handleNavigateToPage('profile')}>
+              <span>
+                Hello {user.nickname ? user.nickname : user.givenName}{' '}
+              </span>
+              <FaRegUser size={40} />
+            </ProfileSection>
+          )}
+          {isAuthenticated ? (
+            <LogoutSection
+              onClick={() => {
+                logout();
+                handleNavigateToPage('logout');
+              }}
+            >
+              Logout
+            </LogoutSection>
+          ) : (
+            <LoginSection onClick={() => loginWithRedirect()}>
+              Login
+            </LoginSection>
+          )}
+          <Cart
+            onClick={() => {
+              handleNavigateToPage('cart');
+            }}
+          >
+            <BsCartDash size={25} />
+            <Counter>{userCartCounter}</Counter>
           </Cart>
         </LoginAndCartSection>
       </Wrapper>
-      {/* <ImagePoster>
-        <img
-          src='/images/pizzas/pizzaoven.jpg'
-          alt='Pizza-Oven'
-          layout='fill'
-          objectFit='contain'
-        />
-      </ImagePoster>
-      <StoresArea>
-        <Store>
-          Store1
-        </Store>
-        <Store>
-          Store2
-        </Store>
-        <Store>
-          Store3
-        </Store>
-      </StoresArea> */}
     </>
   );
 };
-
-// Export the component to be used in App
 
 const Wrapper = styled.div`
   display: flex;
@@ -76,24 +82,36 @@ const Wrapper = styled.div`
   height: 100px;
   padding: 0 10px 0 20px;
 `;
-const LogoAndSearch = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+
+const NaviLink = styled(NavLink)`
+  cursor: pointer;
+  text-decoration: none;
 `;
+
 const LoginAndCartSection = styled.div`
   width: 25%;
-  /* margin-right: 0px; */
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-end;
   align-items: center;
 `;
-const Logo = styled.img`
-  width: 190px;
-  margin-left: 30px;
+
+const ProfileSection = styled.button`
+  color: white;
+  background-color: var(--color-primary);
+  border: none;
+  padding-top: 10px;
+  margin: 0 20px;
+  cursor: pointer;
+  transition: ease-in-out 200ms;
+  span {
+    font-size: 12px;
+  }
+  display: flex;
+  flex-direction: row;
 `;
+
 const Cart = styled.button`
   border-radius: 10px;
   width: 50px;
@@ -106,23 +124,14 @@ const Cart = styled.button`
   border: none;
   margin: 0 20px;
   cursor: pointer;
-  transition: ease-in-out 200ms;
-  &:hover {
-    transform: scale(1.2);
-    color: var(--color-primary);
-    background-color: white;
-  }
-  &:active {
-    transform: scale(0.8);
-  }
   position: relative;
 `;
 
 const Counter = styled.div`
   position: absolute;
-  width: 30px;
-  height: 30px;
-  top: -15px;
+  width: 20px;
+  height: 20px;
+  top: -3px;
   right: -2px;
   background-color: white;
   color: var(--color-primary);
@@ -131,7 +140,7 @@ const Counter = styled.div`
   display: flex;
   border-radius: 50%;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 15px;
 `;
 
 const LoginSection = styled.button`
@@ -146,21 +155,8 @@ const LoginSection = styled.button`
   text-align: center;
   background-color: var(--color-primary);
   cursor: pointer;
-  transition: ease-in 300ms;
-  &:hover {
-    border-color: var(--color-secondary);
-    color: var(--color-secondary);
-    background-color: white;
-    transform: scale(1.1);
-  }
-  &:active {
-    border-color: var(--color-quarternary);
-    color: var(--color-quarternary);
-    transition: ease-in 100ms;
-    transform: scale(0.8);
-  }
 `;
-const LogOut = styled.button`
+const LogoutSection = styled.button`
   font-family: var(--font-heading);
   font-size: 20px;
   border: 2px solid white;
@@ -170,24 +166,7 @@ const LogOut = styled.button`
   margin: 0 20px;
   align-items: center;
   text-align: center;
-  background-color: var(--color-secondary);
+  background-color: var(--color-primary);
   cursor: pointer;
-  transition: ease-in 300ms;
-  &:hover {
-    border-color: var(--color-secondary);
-    color: var(--color-secondary);
-    background-color: white;
-    transform: scale(1.1);
-  }
-  &:active {
-    border-color: var(--color-quarternary);
-    color: var(--color-quarternary);
-    transition: ease-in 100ms;
-    transform: scale(0.98);
-  }
-`;
-const ImagePoster = styled.div`
-  width: 100vw;
-  height: calc(100vh -100px);
 `;
 export default Header;

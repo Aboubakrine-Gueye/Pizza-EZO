@@ -21,45 +21,18 @@ const Header = () => {
     navigate(`/${routename}`);
   };
 
-  // Create a function to handle click of logout button
-  // const handleClickLogOut = () => {
-  //   setCurrentUser(null);
-  //   setIsLoggedIn(false);
-  // dispatch({type: 'clear-cart'})
-  // };
-
   useEffect(() => {
     fetch('/api/stores')
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.data);
         setStore(data.data);
         setloading(true);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  // useEffect(() => {
-  //   const getStores = async () => {
-  //     const stores = await fetch('/api/stores');
-  //     setStore(stores);
-  //   };
-
-  //   getStores(); // Calls getStores
-  //   console.log('STORES = ', store);
-
-  //   return () => {
-  //     // gets called when the component unmounts
-  //     console.log('Unmount UseEffect getStores');
-  //   };
-  // }, []);
-
   if (!store) {
-    console.log('EMPTY stores');
     return <div>Loading ...</div>;
-  } else {
-    console.log('STORES LOADED');
-    console.log('STORE====> ', Array.isArray(store));
   }
 
   return (
@@ -69,7 +42,6 @@ const Header = () => {
           <ImagePoster>
             <img src='/images/pizzas/pizzaoven.jpg' alt='Pizza-Oven' />
           </ImagePoster>
-          {/* <NavigationLink to='{`/stores/${stores._id`}'> */}
           {loading && (
             <NavigationLink>
               {store.map((location) => {
